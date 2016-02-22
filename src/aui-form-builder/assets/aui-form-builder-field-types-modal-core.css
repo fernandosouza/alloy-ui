@@ -1,3 +1,15 @@
 .form-builder-modal.modal-header {
     background-color: 0;
 }
+
+@media only screen and (min-width: 768px) {
+    .form-builder-modal.modal-dialog {
+        margin: 68px 0;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .form-builder-modal.modal-dialog {
+        margin: 48px 0;
+    }
+}

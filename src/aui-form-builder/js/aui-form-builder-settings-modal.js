@@ -97,6 +97,8 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
 
         this._eventToggleAdvancedContent = field.on('contentToggle', A.bind(this._updateModalOnContentToggle, this));
 
+        this._modal.syncHeight();
+
         this._fieldBeingEdited = field;
     },
 
@@ -125,6 +127,8 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
             cssClass: CSS_FIELD_SETTINGS,
             draggable: false,
             modal: true,
+            dynamicContentHeight: true,
+            topFixed: true,
             headerContent: this.TPL_FIELD_SETTINGS_HEAD_CONTENT,
             resizable: false,
             zIndex: 4

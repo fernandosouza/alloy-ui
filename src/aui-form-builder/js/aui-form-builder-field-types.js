@@ -339,6 +339,7 @@ A.FormBuilderFieldTypes.prototype = {
             fieldTypes: this.get('fieldTypes'),
             modal: true,
             resizable: false,
+            topFixed: true,
             visible: false,
             zIndex: 4
         });

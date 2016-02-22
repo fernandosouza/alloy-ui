@@ -1,3 +1,33 @@
+.form-builder-field-settings.modal-dialog {
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+.form-builder-field-settings .modal-body {
+    height: 100%;
+}
+
+.form-builder-field-settings .modal-content {
+    border-radius: 0;
+    height: 100%;
+    padding: 56px 0 65px 0;
+}
+
+.form-builder-field-settings .modal-footer,
+.form-builder-field-settings .modal-header {
+    position: absolute;
+    width: 100%;
+}
+
+.form-builder-field-settings .modal-footer {
+    bottom: 0;
+}
+
+.form-builder-field-settings .modal-header {
+    top: 0;
+}
+
 .form-builder-field-settings-small-screen-header {
     background-color: #C0C0C0;
     height: 40px;
@@ -21,44 +51,42 @@
     margin: 9px 0px 0px 5px;
 }
 
-@media only screen and (max-device-width : 1024px) and (min-device-width : 320px) {
+@media only screen and (max-width: 768px) {
+    .form-builder-field-settings .modal-content {
+        border: none;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .form-builder-field-settings.modal-dialog {
+        height: auto;
+        margin: 68px 0;
+        width: 390px;
+    }
+
     .form-builder-field-settings .modal-body {
-        height: 100%;
-        overflow: auto;
+        height: auto;
     }
 
     .form-builder-field-settings .modal-content {
-        height: 100%;
-        padding-bottom: 121px;
+        border-radius: 6px;
+        height: auto;
+        padding: 0;
     }
 
     .form-builder-field-settings .modal-footer {
-        bottom: 0;
-        position: absolute;
-        width: 100%;
+        position: static;
+    }
+
+    .form-builder-field-settings .modal-footer,
+    .form-builder-field-settings .modal-header {
+        position: static;
     }
 }
 
-@media only screen and (max-device-width : 736px) and (min-device-width : 320px) {
+@media only screen and (min-width: 992px) {
     .form-builder-field-settings.modal-dialog {
-        height: 100%;
-        width: 100%;
+        margin: 48px 0;
+        width: 720px;
     }
-
-    .form-builder-field-settings .modal-content {
-        border-radius: 0;
-    }
-
-    .form-builder-field-settings .modal-footer {
-        bottom: 0;
-        position: absolute;
-        width: 100%;
-    }
-}
-
-@media only screen and (max-device-width : 1024px) and (min-device-width : 768px) {
-    .form-builder-field-settings.modal-dialog {
-        height: 70%;
-        width: 392px;
-    }    
 }
