@@ -343,12 +343,22 @@ A.Modal = A.Base.create('modal', A.Widget, [
      * @protected
      */
     syncHeight: function() {
-        var modalBody = A.one('.' + CSS_MODAL_BD);
+        var modalBody = A.one('.' + CSS_MODAL_BD),
+            property = 'max-height';
 
+        A.one('body').removeClass('sm-screen');
+
+        modalBody.setStyle('min-height', 'auto');
         modalBody.setStyle('max-height', '100%');
 
-        modalBody.setStyle('max-height', A.DOM.winHeight(document) - this._getModalOffset());
-    },
+        if (A.DOM.winWidth(document) < 768) {
+            property = 'min-height';
+
+            A.one('body').addClass('sm-screen');
+        }
+
+        modalBody.setStyle(property, A.DOM.winHeight(document) - this._getModalOffset());
+    }
 }, {
 
     /**
