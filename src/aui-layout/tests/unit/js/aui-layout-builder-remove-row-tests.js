@@ -209,6 +209,22 @@ YUI.add('aui-layout-builder-remove-row-tests', function(Y) {
             removeRowButton = Y.one('.layout-builder-remove-row-button');
 
             Y.Assert.isNull(removeRowButton);
+        },
+
+        'should disable remove rows feature if user is moving a row': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this.layoutBuilder.get('enableRemoveRows'));
+        },
+
+        'should disable remove rows feature if user is moving a column': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this.layoutBuilder.get('enableRemoveRows'));
         }
     }));
 
