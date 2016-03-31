@@ -259,6 +259,30 @@ YUI.add('aui-layout-builder-add-row-tests', function(Y) {
             addNewRowOption.simulate('click');
 
             Assert.areNotEqual(bodyTopBeforeScroll, body.getBoundingClientRect().top);
+        },
+
+        'should not be able to add a new row if user is moving a row': function() {
+            var moveRowButton;
+
+            createALotOfRows();
+
+            moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
+        },
+
+        'should not be able to add a new row if user is moving a column': function() {
+            var moveRowButton;
+
+            createALotOfRows();
+
+            moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
         }
     }));
 
