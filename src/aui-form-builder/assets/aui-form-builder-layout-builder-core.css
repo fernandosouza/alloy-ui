@@ -52,6 +52,10 @@
     z-index: 1;
 }
 
+.layout-builder-moving .form-builder-field-toolbar {
+    display: none;
+}
+
 .layout-builder-move-cut-button.layout-builder-move-cut-row-button {
     border-radius: 50%;
     display: none;
