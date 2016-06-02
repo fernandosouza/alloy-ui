@@ -603,7 +603,7 @@ var FormValidator = A.Component.create({
         addFieldError: function(field, ruleName) {
             var instance = this,
                 errors = instance.errors,
-                name = field.get('name');
+                name = field.get('id');
 
             if (!errors[name]) {
                 errors[name] = [];
@@ -619,10 +619,17 @@ var FormValidator = A.Component.create({
          * @param {Node|String} field
          */
         clearFieldError: function(field) {
-            var fieldName = isNode(field) ? field.get('name') : field;
+            var instance = this;
 
-            if (isString(fieldName)) {
-                delete this.errors[fieldName];
+            if (isString(field)) {
+                var fields = instance.getFieldsByName(field);
+
+                for (var i = 0; i < fields.length; i++){
+                    delete this.errors[fields.item(i).id];
+                }
+            }
+            else if (isNode(field)) {
+                delete this.errors[field.get('id')];
             }
         },
 
@@ -687,20 +694,23 @@ var FormValidator = A.Component.create({
          *
          * @method getField
          * @param {Node|String} field
-         * @return {Node}
+         * @return {Node|NodeList}
          */
         getField: function(field) {
-            var instance = this;
+            var fields;
 
             if (isString(field)) {
-                field = instance.getFieldsByName(field);
-
-                if (field && field.length && !field.name) {
-                    field = field[0];
-                }
+                fields = A.all('[name=' + field + ']');
+            }
+            else {
+                fields = A.all(field);
             }
 
-            return A.one(field);
+            if (fields.size() === 1) {
+                return fields.item(0);
+            }
+
+            return fields;
         },
 
         /**
@@ -727,7 +737,7 @@ var FormValidator = A.Component.create({
         getFieldError: function(field) {
             var instance = this;
 
-            return instance.errors[field.get('name')];
+            return instance.errors[field.get('id')];
         },
 
         /**
@@ -739,7 +749,7 @@ var FormValidator = A.Component.create({
          */
         getFieldStackErrorContainer: function(field) {
             var instance = this,
-                name = field.get('name'),
+                name = field.get('id'),
                 stackContainers = instance._stackErrorContainers;
 
             if (!stackContainers[name]) {
@@ -921,16 +931,25 @@ var FormValidator = A.Component.create({
          */
         resetField: function(field) {
             var fieldNode,
+                instance = this,
                 stackContainer;
 
-            this.clearFieldError(field);
-            fieldNode = isString(field) ? this.getField(field) : field;
+            instance.clearFieldError(field);
+            fieldNode = isString(field) ? instance.getField(field) : field;
 
             if (isNode(fieldNode)) {
-                stackContainer = this.getFieldStackErrorContainer(fieldNode);
+                stackContainer = instance.getFieldStackErrorContainer(fieldNode);
                 stackContainer.remove();
-                this.resetFieldCss(fieldNode);
-                this.unhighlight(fieldNode);
+                instance.resetFieldCss(fieldNode);
+                instance.unhighlight(fieldNode);
+            }
+            else if (A.Lang.isNodeList(fieldNode)) {
+                fieldNode.each(function (node) {
+                    stackContainer = instance.getFieldStackErrorContainer(node);
+                    stackContainer.remove();
+                    instance.resetFieldCss(node);
+                    instance.unhighlight(node);
+                });
             }
         },
 
@@ -1003,21 +1022,35 @@ var FormValidator = A.Component.create({
          */
         validateField: function(field) {
             var fieldNode,
+            instance = this,
                 validatable;
 
-            this.resetField(field);
-            fieldNode = isString(field) ? this.getField(field) : field;
+            instance.resetField(field);
+            fieldNode = isString(field) ? instance.getField(field) : field;
 
             if (isNode(fieldNode)) {
-                validatable = this.validatable(fieldNode);
+                validatable = instance.validatable(fieldNode);
 
                 if (validatable) {
-                    this.fire('validateField', {
+                    instance.fire('validateField', {
                         validator: {
                             field: fieldNode
                         }
                     });
                 }
+            }
+            else if (A.Lang.isNodeList(fieldNode)) {
+                fieldNode.each(function (node) {
+                    validatable = instance.validatable(node);
+
+                    if (validatable) {
+                        instance.fire('validateField', {
+                            validator: {
+                                field: node
+                            }
+                        });
+                    }
+                });
             }
         },
 
@@ -1340,11 +1373,24 @@ var FormValidator = A.Component.create({
                 function(rule, fieldName) {
                     var field = instance.getField(fieldName);
 
-                    var required = instance.normalizeRuleValue(rule.required, field);
+                    if (A.Lang.isNodeList(field)) {
+                        field.each(function(fieldNode) {
+                            var required = instance.normalizeRuleValue(rule.required, fieldNode);
 
-                    if (required) {
-                        if (field && !field.attr('aria-required')) {
-                            field.attr('aria-required', true);
+                            if (required) {
+                                if (fieldNode && !fieldNode.attr('aria-required')) {
+                                    fieldNode.attr('aria-required', true);
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        var required = instance.normalizeRuleValue(rule.required, field);
+
+                        if (required) {
+                            if (field && !field.attr('aria-required')) {
+                                field.attr('aria-required', true);
+                            }
                         }
                     }
                 }

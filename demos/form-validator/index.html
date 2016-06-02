@@ -6,174 +6,77 @@
     <title></title>
     <link rel="stylesheet" href="../../build/aui-css/css/bootstrap.css">
     <script src="../../build/aui/aui.js"></script>
-    <style>
-    form {
-        margin: 0 20px;
-    }
-    </style>
 </head>
 <body>
-    <h1>AlloyUI - Form Validator</h1>
-    <h2>Rules extracted from HTML markup</h2>
-    <form action="" id="fm1" name="fm1">
-        <div class="form-group">
-            <label class="control-label" for="digit1">Digit (required)</label>
-            <div class="controls">
-                <input name="digit1" id="digit1" class="field-required field-digits form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="email1">E-Mail</label>
-            <div class="controls">
-                <input name="email1" id="email1" class="field-email form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="select1">Gender (required)</label>
-            <div class="controls">
-                <select name="select1" id="select1" class="field-required field-select">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value=""></option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="file1">File (required)</label>
-            <div class="controls">
-                <input name="file1" id="file1" class="field-required form-control" type="file">
-            </div>
-        </div>
-        <input type="submit" class="btn btn-primary">
-    </form>
-    <h2>Rules passed from JavaScript</h2>
-    <form action="" id="fm2" name="fm2">
-        <div class="form-group">
-            <label class="control-label" for="digit2">Digit (required)</label>
-            <div class="controls">
-                <input name="digit2" id="digit2" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="email2">E-Mail</label>
-            <div class="controls">
-                <input name="email2" id="email2" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="custom-input">Custom rule (digit >= 50)</label>
-            <div class="controls">
-                <input name="custom-input" id="custom-input" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="image-url">Headshot URL</label>
-            <div class="controls">
-                <input name="image-url" id="image-url" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="forty-two">Custom rule (digit = 42)</label>
-            <div class="controls">
-                <input name="forty-two" id="forty-two" class="form-control" type="text">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">Gender:</label>
 
-            <div class="radio">
-              <label class="control-label"><input type="radio" name="gender" value="male" /> Male</label>
+<!-- START TEMPLATE -->
+    <script id="js-template" type="text/x-handlebars-template">
+        <fieldset class="well">
+            <p class="label label-primary pull-right">{{ x }} row</p>
+            <div class="form-group">
+                <label for="name{{ x }}">Name</label>
+                <input type="text" name="name" class="form-control" id="name{{ x }}" />
             </div>
 
-            <div class="radio">
-              <label class="control-label"><input type="radio" name="gender" value="female" /> Female</label>
+            <div class="form-group">
+                <label for="email{{ x }}">Email</label>
+                <input type="text" name="email" class="form-control" id="email{{ x }}" />
             </div>
-        </div>
-        <div class="form-group">
-            <div class="checkbox">
-              <label for="confirm" class="control-label"><input type="checkbox" name="confirm" id="confirm" value="true"/>Check this box</label>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="file2">File (required)</label>
-            <div class="controls">
-                <input name="file2" id="file2" class="field-required form-control" type="file">
-            </div>
-        </div>
-        <input type="submit" class="btn btn-primary">
-    </form>
-    <script>
-    YUI({ filter:'raw' }).use('aui-form-validator', function(Y) {
+        </fieldset>
+    </script>
+<!-- END TEMPLATE -->
 
+
+<div class="container">
+    <div class="col-lg-8 col-lg-offset-2">
+        <h1>Form Validation Bug Report</h1>
+
+        <ol>
+            <li>New Items are Added Automatically</li>
+            <li>Press Submit Button</li>
+            <li>Notice that only the first items are displaying errors</li>
+            <li>Because of the error above, if you fill the first Name and Email, the validation will submit the form</li>
+            <li>BUT, if you go on each field, the validation works.</li>
+        </ol>
+
+        <hr />
+        <form action="" class="form-vertical" id="myForm">
+            <div id="drop-zone"></div>
+
+            <input type="submit" class="btn btn-primary btn-block" value="Submit me!">
+            <hr />
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+YUI({ filter:'raw' }).use('node', 'event', 'handlebars', 'aui-form-validator', function (Y) {
+    function validator() {
         new Y.FormValidator({
-            boundingBox: Y.one('#fm1'),
+            boundingBox: Y.one('#myForm'),
             showAllMessages: true,
-            validateOnBlur: false,
-            validateOnInput: true
-        });
-
-        Y.config.FormValidator.STRINGS.gt50 = 'The digit should be >= 50.';
-        Y.config.FormValidator.RULES.gt50 = function(val, fieldNode, ruleValue) {
-            return (val >= 50);
-        };
-
-        var isImageURL = function(val) {
-            var regex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
-            return regex.test(val);
-        };
-
-        var isEqualTo42 = function(val) {
-            return (val == 42);
-        };
-
-        Y.FormValidator.addCustomRules(
-            {
-                'imageURL': {
-                    condition: isImageURL,
-                    errorMessage: 'Please enter a valid URL that points to an image (jpg, jpeg, png, or gif).'
+            rules: {
+                name: {
+                    required: true
                 },
-                'fortytwo':{
-                    condition: isEqualTo42,
-                    errorMessage: 'Value must be 42'
+                email: {
+                    required: true,
                 }
             }
-        );
-
-        new Y.FormValidator({
-            boundingBox: Y.one('#fm2'),
-            rules: {
-                confirm: {
-                    required: true
-                },
-                'custom-input': {
-                    digits: true,
-                    gt50: true
-                },
-                digit2: {
-                    digits: true,
-                    required: true
-                },
-                email2: {
-                    email: true
-                },
-                gender: {
-                    required: true
-                },
-                'forty-two': {
-                    fortytwo: true
-                },
-                file2: {
-                    required: true
-                },
-                'image-url': {
-                    imageURL: true,
-                    required: true
-                }
-            },
-            showAllMessages: true
         });
-
-    });
-    </script>
+    }
+    function add(x) {
+        var templateHTML = Y.Handlebars.compile(Y.one("#js-template").getHTML());
+        var output = templateHTML({
+            x: x
+        });
+        Y.one("#drop-zone").append(output);
+    }
+    validator();
+    add(1);
+    add(2);
+    add(3);
+});
+</script>
 </body>
 </html>
